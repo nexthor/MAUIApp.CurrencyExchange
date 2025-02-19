@@ -3,10 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MAUIApp.CurrencyExchange.CurrencyConverterPage"
              Title="CurrencyConverterPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <VerticalStackLayout Spacing="10"
+                         Margin="20">
+        <Label Text="Amount:" />
+        <Entry x:Name="EntAmount" 
+               FontSize="Medium"
+               Keyboard="Numeric"/>
+
+        <Label Text="From:" />
+        <Picker x:Name="PickerFrom" 
+                FontSize="Medium"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedIndexChanged="PickerFrom_SelectedIndexChanged"/>
+
+        <Label Text="To:" />
+        <Picker x:Name="PickerTo" 
+                FontSize="Medium"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedIndexChanged="PickerTo_SelectedIndexChanged"/>
+
+        <Button Text="Convert" Margin="0,20,0,0"
+                Padding="20"
+                FontSize="Large"
+                BackgroundColor="#2667cf"
+                Clicked="Button_Clicked"/>
+
+        <Label x:Name="LblResult"
+               FontSize="Large"
+               HorizontalOptions="Center"/>
     </VerticalStackLayout>
 </ContentPage>

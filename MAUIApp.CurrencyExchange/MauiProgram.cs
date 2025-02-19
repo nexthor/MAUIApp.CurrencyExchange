@@ -25,7 +25,8 @@ namespace MAUIApp.CurrencyExchange
                         .Build();
 
             builder.Configuration.AddConfiguration(config);
-            builder.Services.AddTransient<IApiService, ApiService>();
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IApiService, ApiService>();
             builder.Services.AddTransient<CurrencyConverterPage>();
 #if DEBUG
             builder.Logging.AddDebug();

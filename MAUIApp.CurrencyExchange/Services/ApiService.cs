@@ -9,25 +9,34 @@ namespace MAUIApp.CurrencyExchange.Services
         private readonly HttpClient _httpClient;
         private readonly ApiSettings _apiSettings;
 
-        public ApiService(HttpClient httpClient, IConfiguration config)
+        public ApiService(IHttpClientFactory httpClient, IConfiguration config)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient.CreateClient();
             _apiSettings = config.GetSection(nameof(ApiSettings)).Get<ApiSettings>() ?? throw new Exception("settings cannot be null");
         }
 
-        public async Task<Root> ConvertCurrency(string to, string from, int amount, CancellationToken cancellationToken = default)
+        public async Task<Root> ConvertCurrency(string to, string from, int amount)
         {
-            string url = $"{_apiSettings.BaseUrl}?to={to}&from={from}&amount={amount}";
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("apikey", "oP8O0XYMSh1u14tbjUo4uSO6Ff3a7SU1");
+            try
+            {
+                string url = $"{_apiSettings.BaseUrl}?to={to}&from={from}&amount={amount}";
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("apikey", _apiSettings.ApiKey);
 
-            using var response = await _httpClient.SendAsync(request, cancellationToken);
-            response.EnsureSuccessStatusCode();
+                using var response = await _httpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonSerializer.Deserialize<Root>(content);
+                var content = await response.Content.ReadAsStringAsync();
+                var json = JsonSerializer.Deserialize<Root>(content);
 
-            return json ?? new();
+                return json ?? new();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return new();
         }
     }
 }
